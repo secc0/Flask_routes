@@ -6,9 +6,9 @@ app = Flask(__name__)
 def get_db_connection():
     conn = psycopg2.connect(
         host="localhost",
-        database="formulario_db",  # Substitua pelo nome do seu banco de dados
-        user="postgres",           # Seu usuário PostgreSQL
-        password="Joao2504."       # Sua senha PostgreSQL
+        database="formulario_db", 
+        user="postgres",        
+        password="Joao2504."    
     )
     return conn
 
@@ -35,7 +35,6 @@ def submit():
         nome = request.form['nome']
         comentario = request.form['comentario']
         
-        # Inserir os dados no banco de dados
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute('INSERT INTO comentarios (nome, comentario) VALUES (%s, %s)',
