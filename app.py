@@ -1,6 +1,28 @@
 from flask import Flask, render_template, request, redirect, url_for
+import psycopg2
 
 app = Flask(__name__)
+
+def get_db_connection():
+    conn = psycopg2.connect(
+        host="localhost",
+        database="formulario_db",  # Substitua pelo nome do seu banco de dados
+        user="postgres",           # Seu usuário PostgreSQL
+        password="Joao2504."       # Sua senha PostgreSQL
+    )
+    return conn
+
+
+@app.route('/')
+def index():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM comentarios')
+    comentarios = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template('index.html', comentarios=comentarios)
+
 
 @app.route("/formulario")
 def sobre():
@@ -9,11 +31,21 @@ def sobre():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    
     if request.method == 'POST':
         nome = request.form['nome']
         comentario = request.form['comentario']
-        return render_template('resultado.html', nome=nome, comentario=comentario), print("formulario enviado")
+        
+        # Inserir os dados no banco de dados
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO comentarios (nome, comentario) VALUES (%s, %s)',
+                    (nome, comentario))
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return redirect(url_for('index'))
+
 
 @app.route('/editar/<int:id>', methods=['GET'])
 def editar(id):
@@ -28,9 +60,31 @@ def editar(id):
 @app.route('/atualizar/<int:id>', methods=['POST'])
 def atualizar(id):
     if request.method == 'POST':
-        nome = request.form['nome'],
+        nome = request.form['nome']
         comentario = request.form['comentario']
-        return(f"Comentário {id} \n atualizado com sucesso! Novo nome: {nome},\n Novo comentário: {comentario}")
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('UPDATE comentarios SET nome = %s, comentario = %s WHERE id = %s',
+                    (nome, comentario, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return redirect(url_for('index'))
+    
+@app.route('/excluir/<int:id>', methods=['GET'])
+def excluir(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM comentarios WHERE id = %s', (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(url_for('index'))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

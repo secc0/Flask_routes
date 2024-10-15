@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário</title>
+    <title>Resultado do Envio</title>
 </head>
 <body>
-    <h2>{{nome}}</h2>
-    <p>{{comentario}}</p>
+    <h1>{{ mensagem_sucesso }}</h1>
+    <p>Nome: {{ nome }}</p>
+    <p>Comentário:</p>
+    <blockquote>{{ comentario }}</blockquote>
+    <br>
+    <a href="/formulario">Enviar outro comentário</a>
 </body>
 </html>

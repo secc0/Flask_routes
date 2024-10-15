@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentários</title>
+</head>
+<body>
+    <h1>Comentários</h1>
+    <ul>
+        {% for comentario in comentarios %}
+        <li>
+            <strong>{{ comentario[1] }}</strong> (ID: {{ comentario[0] }}): {{ comentario[2] }}
+            <a href="/editar/{{ comentario[0] }}">Editar</a> |
+            <a href="/excluir/{{ comentario[0] }}">Excluir</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="/formulario">Enviar Novo Comentário</a>
+</body>
+</html>
